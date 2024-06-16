@@ -4,12 +4,12 @@ async function executeCommand(command) {
   return new Promise((resolve, reject) => {
     const childProcess = spawn(command, {
       shell: true,
-      stdio: 'inherit'
+      stdio: ['pipe', 'pipe', 'pipe']
     });
     let stdoutData = '';
 
     // Listen for stdout data
-    childProcess.on('data', (data) => {
+    childProcess.stdout.on('data', (data) => {
       stdoutData += data.toString();
     });
 
