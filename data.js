@@ -13,6 +13,12 @@ const telemetry = {
         unit: 'boolean'
       }
     },
+    temperature: {
+      cpu: {
+        value: null,
+        unit: "°C",
+      }
+    },
     gps: {
       lat: {
         value: 43.66322274012296,
@@ -44,6 +50,9 @@ const telemetry = {
     set updateBatteryVoltage(val) {
       this.battery.voltage.value = val;
     },
+    set updateCPUTemperature(val) {
+      this.temperature.cpu.value = val;
+  },
     set updateGPS(val) {
         this.gps = val;
     },

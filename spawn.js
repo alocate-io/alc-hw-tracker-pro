@@ -32,6 +32,13 @@ const activateKVS = () => {
   }, 5000);
 }
 
+const getCPUTemperature = async () =>{
+  const result = await executeCommand('cat /sys/class/thermal/thermal_zone0/temp');
+  const tempCelsius = (parseInt(result, 10) / 1000).toFixed(2);
+
+  return parseFloat(tempCelsius);
+}
+
 const getBatteryLevel = async () =>{
   const result = await executeCommand('echo "get battery" | nc -q 0 127.0.0.1 8423');
   return parseFloat(result?.split(' ')[1] || 0);
@@ -51,5 +58,6 @@ module.exports = {
   activateKVS,
   getBatteryLevel,
   getBatteryCharging,
-  getBatteryVoltage
+  getBatteryVoltage,
+  getCPUTemperature
 }

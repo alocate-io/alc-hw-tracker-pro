@@ -1,18 +1,22 @@
-const { activateKVS, getBatteryLevel, getBatteryVoltage, getBatteryCharging } = require('./spawn');
+const { activateKVS, getCPUTemperature,  getBatteryLevel, getBatteryVoltage, getBatteryCharging } = require('./spawn');
 const { mqttMotorChannel, mqttSensorTopic } = require("./constants");
 const { mqttClient } = require('./iot');
 const { gps, gpsSerialParser } = require('./gpsSerial');
 const { lteSerialPort, lteSerialParser, ltePortWrite } = require('./lteSerial');
 const { telemetry } = require('./data');
+const {logEnvironmentVariables } = require('./util');
 
 let isMQTTConnected = false;
+
+logEnvironmentVariables();
 
 // LTE SERIAL LISTENER
 lteSerialPort.on('open', async()=>{
    console.log('LTE Serial Port: Ready');
 
-   // Get initial modem signal quality
-   await ltePortWrite('AT+CSQ\r\n');
+   await ltePortWrite('AT\r\n');
+
+   await updateTelemetry();
 
    // Activate GPS NMEA stream
    await ltePortWrite('AT+CGPS=1\r\n');
@@ -20,6 +24,8 @@ lteSerialPort.on('open', async()=>{
 
 lteSerialParser.on('data', (data)=>{
    data = data.toString();
+
+   console.log('MODEM:', data);
 
    if(data.includes('+CSQ:')) {
        data = data.replace('+CSQ: ', '');
@@ -58,6 +64,20 @@ gpsSerialParser.on('data', (data)=>{
     if(data.includes('$GPVTG') || data.includes('$GPGGA') || data.includes('$GPHDT') || data.includes('$GPRMC')) gps.update(data);
 });
 
+const updateTelemetry = async () => {
+    const batteryLevel = await getBatteryLevel();
+    const batteryVoltage = await getBatteryVoltage();
+    const batteryIsCharging = await getBatteryCharging();
+    const cpuTemperature = await getCPUTemperature();
+
+    await ltePortWrite('AT+CSQ\r\n');
+
+    telemetry.updateBatteryLevel = batteryLevel;
+    telemetry.updateBatteryIsCharging = batteryIsCharging;
+    telemetry.updateBatteryVoltage = batteryVoltage;
+    telemetry.updateCPUTemperature = cpuTemperature;
+}
+
 // INTERVAL READERS
 setInterval(()=>{
     if(isMQTTConnected) {
@@ -65,15 +85,7 @@ setInterval(()=>{
     }
 },  1000);
 
-
 setInterval(async ()=>{
-    await ltePortWrite('AT+CSQ\r\n');
-    const batteryLevel = await getBatteryLevel();
-    const batteryVoltage = await getBatteryVoltage();
-    const batteryIsCharging = await getBatteryCharging();
-
-    telemetry.updateBatteryLevel = batteryLevel;
-    telemetry.updateBatteryIsCharging = batteryIsCharging;
-    telemetry.updateBatteryVoltage = batteryVoltage;
+    await updateTelemetry();
 },  60000);
 
