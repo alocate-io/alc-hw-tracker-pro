@@ -15,11 +15,7 @@ lteSerialPort.on('open', async()=>{
    console.log('LTE Serial Port: Ready');
 
    await ltePortWrite('AT\r\n');
-
    await updateTelemetry();
-
-   // Activate GPS NMEA stream
-   await ltePortWrite('AT+CGPS=1\r\n');
 });
 
 lteSerialParser.on('data', (data)=>{
