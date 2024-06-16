@@ -35,14 +35,14 @@ const telemetry = {
     lte: {
       signal: { value: null },
     },
-    set updateBattery(val) {
-        this.battery.voltage.value = val;
+    set updateBatteryLevel(val) {
+        this.battery.level.value = val;
     },
     set updateGPS(val) {
         this.gps = val;
     },
     set updateLTE(val) {
-        this.lte.signal.value = val;
+        this.lte.signal.value = parseInt(val?.split(',')[0] || '0');
     },                   
 };
 

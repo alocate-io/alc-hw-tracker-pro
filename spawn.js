@@ -29,20 +29,27 @@ async function executeCommand(command, args) {
   });
 }
 
-export const activateKVS = () => {
+const activateKVS = () => {
     setTimeout(()=>{
         const kvsClient = spawn('/home/pi/kvs/kvsWebrtcClientMasterGstSample', [process.env.DEVICE_ID]);    
     }, 5000);
 }
 
-export const getBatteryLevel = async () =>{
+const getBatteryLevel = async () =>{
     return await executeCommand('echo "get battery" | nc -q 0 127.0.0.1 8423');
 }
 
-export const getBatteryCharging = async () =>{
+const getBatteryCharging = async () =>{
     return await executeCommand('echo "get battery_charging" | nc -q 0 127.0.0.1 8423');
 }
 
-export const getBatteryVoltage = async () =>{
+const getBatteryVoltage = async () =>{
     return await executeCommand('echo "get battery_v" | nc -q 0 127.0.0.1 8423');
+}
+
+module.exports = {
+  activateKVS,
+  getBatteryLevel,
+  getBatteryCharging,
+  getBatteryVoltage
 }

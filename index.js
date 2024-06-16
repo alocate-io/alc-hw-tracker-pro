@@ -1,4 +1,4 @@
-const { activateKVS } = require('./spawn');
+const { activateKVS, getBatteryLevel, getBatteryVoltage, getBatteryCharging } = require('./spawn');
 const { mqttMotorChannel, mqttSensorTopic } = require("./constants");
 const { mqttClient } = require('./iot');
 const { gps, gpsSerialParser } = require('./gpsSerial');
@@ -58,9 +58,23 @@ gpsSerialParser.on('data', (data)=>{
     if(data.includes('$GPVTG') || data.includes('$GPGGA') || data.includes('$GPHDT') || data.includes('$GPRMC')) gps.update(data);
 });
 
-// INTERVAL READER
+// INTERVAL READERS
 setInterval(()=>{
     if(isMQTTConnected) {
         mqttClient.publish(mqttSensorTopic, JSON.stringify(telemetry));
     }
 },  1000);
+
+
+setInterval(async ()=>{
+    await ltePortWrite('AT+CSQ\r\n');
+    const batteryLevel = await getBatteryLevel();
+    const batteryVoltage = await getBatteryVoltage();
+    const batteryIsCharging = await getBatteryCharging();
+
+    console.log('batteryLevel', batteryLevel)
+    console.log('batteryVoltage', batteryVoltage)
+    console.log('batteryIsCharging', batteryIsCharging)
+
+},  60000);
+
