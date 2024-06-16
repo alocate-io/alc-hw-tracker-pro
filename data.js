@@ -36,7 +36,7 @@ const telemetry = {
       signal: { value: null },
     },
     set updateBatteryLevel(val) {
-        this.battery.level.value = val;
+      this.battery.level.value = val;
     },
     set updateBatteryIsCharging(val) {
       this.battery.isCharging.value = val;

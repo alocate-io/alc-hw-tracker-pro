@@ -39,7 +39,7 @@ const getBatteryLevel = async () =>{
 
 const getBatteryCharging = async () =>{
   const result = await executeCommand('echo "get battery_charging" | nc -q 0 127.0.0.1 8423');
-  return result?.split(' ')[1] === 'true' ? true : false; 
+  return result.includes('true') ? true : false; 
 }
 
 const getBatteryVoltage = async () =>{
