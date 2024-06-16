@@ -38,6 +38,12 @@ const telemetry = {
     set updateBatteryLevel(val) {
         this.battery.level.value = val;
     },
+    set updateBatteryIsCharging(val) {
+      this.battery.isCharging.value = val;
+    },
+    set updateBatteryVoltage(val) {
+      this.battery.voltage.value = val;
+    },
     set updateGPS(val) {
         this.gps = val;
     },

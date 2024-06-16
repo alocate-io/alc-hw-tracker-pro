@@ -72,9 +72,8 @@ setInterval(async ()=>{
     const batteryVoltage = await getBatteryVoltage();
     const batteryIsCharging = await getBatteryCharging();
 
-    console.log('batteryLevel', batteryLevel)
-    console.log('batteryVoltage', batteryVoltage)
-    console.log('batteryIsCharging', batteryIsCharging)
-
+    telemetry.updateBatteryLevel = batteryLevel;
+    telemetry.updateBatteryIsCharging = batteryIsCharging;
+    telemetry.updateBatteryVoltage = batteryVoltage;
 },  60000);
 
