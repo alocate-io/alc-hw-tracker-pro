@@ -1,7 +1,6 @@
 const { activateKVS, getCPUTemperature,  getBatteryLevel, getBatteryVoltage, getBatteryCharging } = require('./spawn');
 const { mqttMotorChannel, mqttSensorTopic } = require("./constants");
 const { mqttClient } = require('./iot');
-const { gps, gpsSerialParser } = require('./gpsSerial');
 const { lteSerialPort, lteSerialParser, ltePortWrite } = require('./lteSerial');
 const { telemetry } = require('./data');
 const { testInternet, logEnvironmentVariables } = require('./util');
@@ -16,6 +15,9 @@ lteSerialPort.on('open', async()=>{
 
    await ltePortWrite('AT\r\n');
    await updateTelemetry();
+   await ltePortWrite('AT+CGPS=1\r\n');
+
+   gpsInitialize();
 });
 
 lteSerialParser.on('data', (data)=>{
@@ -30,7 +32,29 @@ lteSerialParser.on('data', (data)=>{
    }
 });
 
-const initialize = async () =>{
+const gpsInitialize = () => {
+    console.log('GPS:', 'Initializing NMEA Stream');
+    const { gps, gpsSerialParser } = require('./gpsSerial');
+
+    // GPS SERIAL LISTENERS
+    gps.on('data', () => {
+        if(gps.state.lat && gps.state.lon) {
+            telemetry.updateGPS = {
+                lat: { value: gps.state.lat },
+                lon: { value: gps.state.lon},
+                speed: { value: Math.round(gps.state.speed)},
+                track: { value: Math.round(gps.state.track), unit: "°"},
+                alt: { value: Math.round(gps.state.alt), unit: "m"},
+            }
+        }
+    })
+
+    gpsSerialParser.on('data', (data)=>{
+        if(data.includes('$GPVTG') || data.includes('$GPGGA') || data.includes('$GPHDT') || data.includes('$GPRMC')) gps.update(data);
+    });
+}
+
+const kvsInitialize = async () =>{
     for (let step = 0; step < 5; step++) {
         if(await testInternet()) {
             console.log('LTE: Internet Connected');
@@ -46,28 +70,11 @@ mqttClient.on("connect", () => {
     isMQTTConnected = true;
 
     // [1] Initialize KVS
-    initialize();
+    kvsInitialize();
 
     mqttClient.subscribe(mqttMotorChannel, (err) => {
         if(!err) console.log(`Subscribed to [${mqttMotorChannel}]`);
     });
-});
-
-// GPS SERIAL LISTENERS
-gps.on('data', () => {
-    if(gps.state.lat && gps.state.lon) {
-        telemetry.updateGPS = {
-            lat: { value: gps.state.lat },
-            lon: { value: gps.state.lon},
-            speed: { value: Math.round(gps.state.speed)},
-            track: { value: Math.round(gps.state.track), unit: "°"},
-            alt: { value: Math.round(gps.state.alt), unit: "m"},
-        }
-    }
-})
-
-gpsSerialParser.on('data', (data)=>{
-    if(data.includes('$GPVTG') || data.includes('$GPGGA') || data.includes('$GPHDT') || data.includes('$GPRMC')) gps.update(data);
 });
 
 const updateTelemetry = async () => {
