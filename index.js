@@ -4,7 +4,7 @@ const { mqttClient } = require('./iot');
 const { gps, gpsSerialParser } = require('./gpsSerial');
 const { lteSerialPort, lteSerialParser, ltePortWrite } = require('./lteSerial');
 const { telemetry } = require('./data');
-const {logEnvironmentVariables } = require('./util');
+const { testInternet, logEnvironmentVariables } = require('./util');
 
 let isMQTTConnected = false;
 
@@ -30,13 +30,23 @@ lteSerialParser.on('data', (data)=>{
    }
 });
 
+const initialize = async () =>{
+    for (let step = 0; step < 5; step++) {
+        if(await testInternet()) {
+            console.log('LTE: Internet Connected');
+            activateKVS();
+            break;
+        } else console.log('LTE: No Internet')
+    }
+}
+
 // MQTT LISTENERS
 mqttClient.on("connect", () => {
     console.log('MQTT Client: Connected');
     isMQTTConnected = true;
 
     // [1] Initialize KVS
-    activateKVS();
+    initialize();
 
     mqttClient.subscribe(mqttMotorChannel, (err) => {
         if(!err) console.log(`Subscribed to [${mqttMotorChannel}]`);
