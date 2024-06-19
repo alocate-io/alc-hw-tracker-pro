@@ -17,7 +17,9 @@ lteSerialPort.on('open', async()=>{
    await updateTelemetry();
    await ltePortWrite('AT+CGPS=1\r\n');
 
-   gpsInitialize();
+   setTimeout(()=>{
+    gpsInitialize();
+   }, 5000)
 });
 
 lteSerialParser.on('data', (data)=>{
