@@ -5,6 +5,10 @@ const { lteSerialPort, lteSerialParser, ltePortWrite } = require('./lteSerial');
 const { telemetry } = require('./data');
 const { testInternet, logEnvironmentVariables } = require('./util');
 
+const GPS = require('gps');
+const { SerialPort } = require('serialport');
+const { ReadlineParser } = require('@serialport/parser-readline');
+
 let isMQTTConnected = false;
 
 logEnvironmentVariables();
@@ -19,7 +23,7 @@ lteSerialPort.on('open', async()=>{
 
    setTimeout(()=>{
     gpsInitialize();
-   }, 5000)
+   }, 15000)
 });
 
 lteSerialParser.on('data', (data)=>{
@@ -36,7 +40,10 @@ lteSerialParser.on('data', (data)=>{
 
 const gpsInitialize = () => {
     console.log('GPS:', 'Initializing NMEA Stream');
-    const { gps, gpsSerialParser } = require('./gpsSerial');
+
+    const port = new SerialPort({ path: '/dev/ttyUSB1', baudRate: 115200 });
+    const gpsSerialParser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }));
+    const gps = new GPS;
 
     // GPS SERIAL LISTENERS
     gps.on('data', () => {
