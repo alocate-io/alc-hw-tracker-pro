@@ -21,10 +21,10 @@ const telemetry = {
     },
     gps: {
       lat: {
-        value: 43.66322274012296,
+        value: null,
       },
       lon: {
-        value: -79.51939702033998,
+        value: null,
       },
       speed: {
         value: null,

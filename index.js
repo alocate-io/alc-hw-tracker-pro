@@ -15,7 +15,7 @@ logEnvironmentVariables();
 
 // LTE SERIAL LISTENER
 lteSerialPort.on('open', async()=>{
-   console.log('LTE Serial Port: Ready');
+   console.log(new Date().toISOString(),'LTE Serial Port: Ready');
 
    await ltePortWrite('AT\r\n');
    await updateTelemetry();
@@ -87,16 +87,16 @@ mqttClient.on("connect", () => {
 });
 
 const updateTelemetry = async () => {
-    const batteryLevel = await getBatteryLevel();
-    const batteryVoltage = await getBatteryVoltage();
-    const batteryIsCharging = await getBatteryCharging();
+    // const batteryLevel = await getBatteryLevel();
+    // const batteryVoltage = await getBatteryVoltage();
+    // const batteryIsCharging = await getBatteryCharging();
     const cpuTemperature = await getCPUTemperature();
 
     await ltePortWrite('AT+CSQ\r\n');
 
-    telemetry.updateBatteryLevel = batteryLevel;
-    telemetry.updateBatteryIsCharging = batteryIsCharging;
-    telemetry.updateBatteryVoltage = batteryVoltage;
+    // telemetry.updateBatteryLevel = batteryLevel;
+    // telemetry.updateBatteryIsCharging = batteryIsCharging;
+    // telemetry.updateBatteryVoltage = batteryVoltage;
     telemetry.updateCPUTemperature = cpuTemperature;
 }
 
