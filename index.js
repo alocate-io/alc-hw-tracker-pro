@@ -66,7 +66,7 @@ const gpsInitialize = () => {
 const kvsInitialize = async () =>{
     for (let step = 0; step < 5; step++) {
         if(await testInternet()) {
-            console.log('LTE: Internet Connected');
+            console.log(`${new Date().toLocaleString()} | LTE: Internet Connected'`);
             activateKVS();
             break;
         } else console.log('LTE: No Internet')

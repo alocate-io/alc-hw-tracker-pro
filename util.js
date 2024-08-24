@@ -7,7 +7,10 @@ const logEnvironmentVariables = () => {
 }
 
 const testInternet = async () => {
-    const result = await ping.promise.probe(testHost);
+    const result = await ping.promise.probe(testHost, {
+        timeout: 10,
+        extra: ['-i', '2'],
+    });
 
     return result.alive;
 }

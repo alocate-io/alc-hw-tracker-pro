@@ -29,7 +29,8 @@ async function executeCommand(command) {
 const activateKVS = () => {
   setTimeout(()=>{
       const kvsClient = spawn('/home/pi/kvs/kvsWebrtcClientMasterGstSample', [process.env.DEVICE_ID]);    
-  }, 15000);
+      console.log(`${new Date().toLocaleString()} | KVS: Start`);
+  }, 30000);
 }
 
 const getCPUTemperature = async () =>{
