@@ -41,6 +41,7 @@ const telemetry = {
     lte: {
       signal: { value: null },
     },
+    kvs: false,
     set updateBatteryLevel(val) {
       this.battery.level.value = val;
     },
@@ -52,12 +53,15 @@ const telemetry = {
     },
     set updateCPUTemperature(val) {
       this.temperature.cpu.value = val;
-  },
+    },
+    set updateKVS(val) {
+      this.kvs = val;
+    },
     set updateGPS(val) {
-        this.gps = val;
+      this.gps = val;
     },
     set updateLTE(val) {
-        this.lte.signal.value = parseInt(val?.split(',')[0] || '0');
+      this.lte.signal.value = parseInt(val?.split(',')[0] || '0');
     },                   
 };
 

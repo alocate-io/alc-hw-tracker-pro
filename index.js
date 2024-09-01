@@ -10,7 +10,6 @@ const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 
 let isMQTTConnected = false;
-let isKVSConnected = false;
 
 logEnvironmentVariables();
 
@@ -88,16 +87,16 @@ mqttClient.on("connect", () => {
 
 mqttClient.on("disconnect", ()=>{
     console.log('MQTT Client: Disconnected');
-
-    isKVSConnected = false;
     isMQTTConnected = false;
+
+    telemetry.updateKVS(false);
 });
 
 mqttClient.on("close", ()=>{
     console.log('MQTT Client: Closed');
-
-    isKVSConnected = false;
     isMQTTConnected = false;
+
+    telemetry.updateKVS(false);
 });
 
 const updateTelemetry = async () => {
@@ -124,10 +123,6 @@ setInterval(()=>{
 setInterval(async ()=>{
     await updateTelemetry();
 
-    if(!isKVSConnected) kvsInitialize();
+    if(!telemetry.kvs) kvsInitialize();
     else console.log('KVS already connected');
 },  60000);
-
-module.exports = {
-    isKVSConnected
-}
