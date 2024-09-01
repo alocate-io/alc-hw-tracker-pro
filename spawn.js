@@ -32,7 +32,7 @@ const activateKVS = () => {
       const kvsClient = spawn('/home/pi/kvs/kvsWebrtcClientMasterGstSample', [process.env.DEVICE_ID]);    
       console.log(`${new Date().toLocaleString()} | KVS: Start`);
       telemetry.updateKVS = true;
-  }, 30000);
+  }, 10000);
 }
 
 const getCPUTemperature = async () =>{

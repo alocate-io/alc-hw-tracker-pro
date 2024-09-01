@@ -21,11 +21,13 @@ lteSerialPort.on('open', async()=>{
     await updateTelemetry();
     await ltePortWrite('AT+CGPS=1\r\n');
 
-    kvsInitialize();
-
     setTimeout(()=>{
         gpsInitialize();
     }, 15000)
+
+    setTimeout(()=>{
+        kvsInitialize();
+    }, 20000)
 });
 
 lteSerialParser.on('data', (data)=>{
@@ -123,6 +125,9 @@ setInterval(()=>{
 setInterval(async ()=>{
     await updateTelemetry();
 
-    if(!telemetry.kvs) kvsInitialize();
-    else console.log('KVS already connected');
+    if(!telemetry.kvs) {
+        console.log('KVS status is disconnected, attempting to reconnect...');
+        kvsInitialize();
+    }
+    else console.log('KVS status is normal');
 },  60000);
