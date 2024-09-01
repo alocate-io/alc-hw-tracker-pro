@@ -15,15 +15,17 @@ logEnvironmentVariables();
 
 // LTE SERIAL LISTENER
 lteSerialPort.on('open', async()=>{
-   console.log(new Date().toISOString(),'LTE Serial Port: Ready');
+    console.log(new Date().toISOString(),'LTE Serial Port: Ready');
 
-   await ltePortWrite('AT\r\n');
-   await updateTelemetry();
-   await ltePortWrite('AT+CGPS=1\r\n');
+    await ltePortWrite('AT\r\n');
+    await updateTelemetry();
+    await ltePortWrite('AT+CGPS=1\r\n');
 
-   setTimeout(()=>{
-    gpsInitialize();
-   }, 15000)
+    kvsInitialize();
+
+    setTimeout(()=>{
+        gpsInitialize();
+    }, 15000)
 });
 
 lteSerialParser.on('data', (data)=>{
@@ -64,7 +66,7 @@ const gpsInitialize = () => {
 }
 
 const kvsInitialize = async () =>{
-    for (let step = 0; step < 5; step++) {
+    for (let step = 0; step < 10; step++) {
         if(await testInternet()) {
             console.log(`${new Date().toLocaleString()} | LTE: Internet Connected'`);
             activateKVS();
@@ -77,9 +79,6 @@ const kvsInitialize = async () =>{
 mqttClient.on("connect", () => {
     console.log('MQTT Client: Connected');
     isMQTTConnected = true;
-
-    // [1] Initialize KVS
-    kvsInitialize();
 
     mqttClient.subscribe(mqttMotorChannel, (err) => {
         if(!err) console.log(`Subscribed to [${mqttMotorChannel}]`);
