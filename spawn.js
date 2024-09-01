@@ -31,7 +31,7 @@ const activateKVS = () => {
   setTimeout(()=>{
       const kvsClient = spawn('/home/pi/kvs/kvsWebrtcClientMasterGstSample', [process.env.DEVICE_ID]);    
       console.log(`${new Date().toLocaleString()} | KVS: Start`);
-      telemetry.updateKVS(true);
+      telemetry.updateKVS = true;
   }, 30000);
 }
 

@@ -89,14 +89,14 @@ mqttClient.on("disconnect", ()=>{
     console.log('MQTT Client: Disconnected');
     isMQTTConnected = false;
 
-    telemetry.updateKVS(false);
+    telemetry.updateKVS = false;
 });
 
 mqttClient.on("close", ()=>{
     console.log('MQTT Client: Closed');
     isMQTTConnected = false;
 
-    telemetry.updateKVS(false);
+    telemetry.updateKVS = false;
 });
 
 const updateTelemetry = async () => {
