@@ -1,4 +1,5 @@
 const { spawn } = require('child_process');
+const { isKVSConnected } = require('./index');
 
 async function executeCommand(command) {
   return new Promise((resolve, reject) => {
@@ -30,6 +31,7 @@ const activateKVS = () => {
   setTimeout(()=>{
       const kvsClient = spawn('/home/pi/kvs/kvsWebrtcClientMasterGstSample', [process.env.DEVICE_ID]);    
       console.log(`${new Date().toLocaleString()} | KVS: Start`);
+      isKVSConnected = true;
   }, 30000);
 }
 
