@@ -1,5 +1,5 @@
 const { spawn } = require('child_process');
-const { isKVSConnected } = require('./index');
+let { isKVSConnected } = require('./index');
 
 async function executeCommand(command) {
   return new Promise((resolve, reject) => {

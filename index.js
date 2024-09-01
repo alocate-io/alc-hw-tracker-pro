@@ -125,6 +125,7 @@ setInterval(async ()=>{
     await updateTelemetry();
 
     if(!isKVSConnected) kvsInitialize();
+    else console.log('KVS already connected');
 },  60000);
 
 module.exports = {
