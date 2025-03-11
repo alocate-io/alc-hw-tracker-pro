@@ -19,7 +19,9 @@ lteSerialPort.on('open', async()=>{
 
     await ltePortWrite('AT\r\n');
     await updateTelemetry();
-    await ltePortWrite('AT+CGPS=1\r\n');
+
+    /** NOTE: commenting this out, since we'll be using AT+CGPSAUTO=1 on device*/
+    // await ltePortWrite('AT+CGPS=1\r\n');
 
     setTimeout(()=>{
         gpsInitialize();
@@ -68,7 +70,9 @@ const gpsInitialize = () => {
 }
 
 const kvsInitialize = async () =>{
-    for (let step = 0; step < 10; step++) {
+    const attempts = 10
+
+    for (let step = 0; step < attempts; step++) {
         if(await testInternet()) {
             console.log(`${new Date().toLocaleString()} | LTE: Internet Connected'`);
             activateKVS();
