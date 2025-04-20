@@ -76,13 +76,8 @@ const getCPUUSage = async () => {
   const result = await executeCommand(
     "ps -C kvsWebrtcClient -o %cpu --no-headers"
   );
-  const usage = result.trim();
 
-  if (usage === "") {
-    return 0;
-  }
-
-  return parseFloat(usage);
+  return parseFloat(result ? result : "0");
 };
 
 const getCPUTemperature = async () => {
