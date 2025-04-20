@@ -73,8 +73,14 @@ const activateKVS = () => {
 };
 
 const getCPUUSage = async () => {
-  const result = await executeCommand("cat /proc/loadavg");
-  const usage = result.split(" ")[0];
+  const result = await executeCommand(
+    "ps -C kvsWebrtcClient -o %cpu --no-headers"
+  );
+  const usage = result.trim();
+
+  if (usage === "") {
+    return 0;
+  }
 
   return parseFloat(usage);
 };
