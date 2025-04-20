@@ -1,6 +1,7 @@
 const {
   activateKVS,
   getCPUTemperature,
+  getCPUUSage,
   getBatteryLevel,
   getBatteryVoltage,
   getBatteryCharging,
@@ -40,8 +41,6 @@ lteSerialPort.on("open", async () => {
 
 lteSerialParser.on("data", (data) => {
   data = data.toString();
-
-  console.log("MODEM:", data);
 
   if (data.includes("+CSQ:")) {
     data = data.replace("+CSQ: ", "");
@@ -123,6 +122,7 @@ const updateTelemetry = async () => {
   // const batteryVoltage = await getBatteryVoltage();
   // const batteryIsCharging = await getBatteryCharging();
   const cpuTemperature = await getCPUTemperature();
+  const cpuUsage = await getCPUUSage();
 
   await ltePortWrite("AT+CSQ\r\n");
 
@@ -130,6 +130,7 @@ const updateTelemetry = async () => {
   // telemetry.updateBatteryIsCharging = batteryIsCharging;
   // telemetry.updateBatteryVoltage = batteryVoltage;
   telemetry.updateCPUTemperature = cpuTemperature;
+  telemetry.updateCPUUsage = cpuUsage;
 };
 
 // INTERVAL READERS

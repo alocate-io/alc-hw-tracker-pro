@@ -1,70 +1,77 @@
 const telemetry = {
-    battery: {
-      voltage: {
-        value: null,
-        unit: "V",
-      },
-      level: {
-        value: null,
-        unit: "%"
-      },
-      isCharging: {
-        value: false,
-        unit: 'boolean'
-      }
+  battery: {
+    voltage: {
+      value: null,
+      unit: "V",
+    },
+    level: {
+      value: null,
+      unit: "%",
+    },
+    isCharging: {
+      value: false,
+      unit: "boolean",
+    },
+  },
+  cpu: {
+    usage: {
+      value: null,
+      unit: "%",
     },
     temperature: {
-      cpu: {
-        value: null,
-        unit: "°C",
-      }
+      value: null,
+      unit: "°C",
     },
-    gps: {
-      lat: {
-        value: null,
-      },
-      lon: {
-        value: null,
-      },
-      speed: {
-        value: null,
-      },
-      track: {
-        value: 0,
-        unit: "°",
-      },
-      alt: {
-        value: null,
-        unit: "m",
-      },
+  },
+  gps: {
+    lat: {
+      value: null,
     },
-    lte: {
-      signal: { value: null },
+    lon: {
+      value: null,
     },
-    kvs: false,
-    set updateBatteryLevel(val) {
-      this.battery.level.value = val;
+    speed: {
+      value: null,
     },
-    set updateBatteryIsCharging(val) {
-      this.battery.isCharging.value = val;
+    track: {
+      value: 0,
+      unit: "°",
     },
-    set updateBatteryVoltage(val) {
-      this.battery.voltage.value = val;
+    alt: {
+      value: null,
+      unit: "m",
     },
-    set updateCPUTemperature(val) {
-      this.temperature.cpu.value = val;
-    },
-    set updateKVS(val) {
-      this.kvs = val;
-    },
-    set updateGPS(val) {
-      this.gps = val;
-    },
-    set updateLTE(val) {
-      this.lte.signal.value = parseInt(val?.split(',')[0] || '0');
-    },                   
+  },
+  lte: {
+    signal: { value: null },
+  },
+  kvs: false,
+  set updateBatteryLevel(val) {
+    this.battery.level.value = val;
+  },
+  set updateBatteryIsCharging(val) {
+    this.battery.isCharging.value = val;
+  },
+  set updateBatteryVoltage(val) {
+    this.battery.voltage.value = val;
+  },
+  set updateCPUTemperature(val) {
+    this.cpu.temperature.value = val;
+  },
+  set updateCPUUsage(val) {
+    this.cpu.usage.value = val;
+  },
+  set updateKVS(val) {
+    this.kvs = val;
+  },
+  set updateGPS(val) {
+    this.gps = val;
+  },
+  set updateLTE(val) {
+    this.lte.signal.value = parseInt(val?.split(",")[0] || "0");
+  },
 };
 
 module.exports = {
-    telemetry
-}
+  telemetry,
+};

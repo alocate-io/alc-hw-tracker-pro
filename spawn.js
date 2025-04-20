@@ -48,7 +48,11 @@ const activateKVS = () => {
 
   const restartChild = () => {
     if (kvsClient) {
-      console.log("Killing child process...");
+      console.log(
+        `${new Date().toLocaleString()} | KVS: Killing process - ${
+          kvsClient.pid
+        }`
+      );
       kvsClient.kill("SIGTERM");
 
       // Wait a moment before restarting to allow cleanup
@@ -66,6 +70,13 @@ const activateKVS = () => {
   setInterval(restartChild, interval);
 
   telemetry.updateKVS = true;
+};
+
+const getCPUUSage = async () => {
+  const result = await executeCommand("cat /proc/loadavg");
+  const usage = result.split(" ")[0];
+
+  return parseFloat(usage);
 };
 
 const getCPUTemperature = async () => {
@@ -104,4 +115,5 @@ module.exports = {
   getBatteryCharging,
   getBatteryVoltage,
   getCPUTemperature,
+  getCPUUSage,
 };
